@@ -6,11 +6,12 @@ body {
 }
 
 .chat-app {
-    max-width: 400px;
+    max-width: 800px;
     margin: 50px auto;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* To clear floats */
 }
 
 .chat-header {
@@ -18,8 +19,6 @@ body {
     color: #fff;
     padding: 10px 20px;
     font-size: 20px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
 }
 
 .chat-messages {
@@ -35,7 +34,6 @@ body {
     padding: 5px 10px;
     background-color: #dcf8c6;
     border-radius: 10px;
-    align-self: flex-end;
     max-width: 80%;
 }
 
@@ -66,4 +64,26 @@ body {
 
 .send-button:hover {
     background-color: #128c7e;
+}
+
+.users-sidebar {
+    float: left;
+    width: 30%;
+    border-right: 1px solid #f1f1f1;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.chat-section {
+    float: left;
+    width: 70%;
+}
+
+.users-sidebar h3 {
+    margin-top: 0;
+}
+
+#users {
+    list-style-type: none;
+    padding-left: 0;
 }

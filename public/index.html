@@ -3,35 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <title>Socket.io Chat App</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="chat-app">
-        <div class="chat-header">
-            Simple Chat App
+        <div class="users-sidebar">
+            <h3>Users</h3>
+            <ul id="users"></ul>
         </div>
-        <ul id="messages" class="chat-messages"></ul>
-        <div class="chat-input-container">
-            <form id="form" action="">
-                <input id="input" placeholder="Type a message" autocomplete="off"/>
-                <button class="send-button">Send</button>
-            </form>
+        <div class="chat-section">
+            <div class="chat-header">
+                Simple Chat App
+            </div>
+            <ul id="messages" class="chat-messages"></ul>
+            <div class="chat-input-container">
+                <form id="form" action="">
+                    <input id="input" placeholder="Type a message" autocomplete="off"/>
+                    <button class="send-button">Send</button>
+                </form>
+            </div>
         </div>
     </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      $(function () {
+        var username = "";
+        while (!username || username.trim() === "") {
+            username = prompt("Enter your username:");
+            if (!username || username.trim() === "") {
+                alert("Username is required!");
+            }
+        }
+
+        var emojiMap = {
+            "lol": "😂",
+            "wow": "😮",
+            "hey": "👋",
+            "like": "🤍",
+            "congratulations": "🎉",
+            "react":"🔯"
+        };
+
+        function replaceWithEmoji(text) {
+            for (var key in emojiMap) {
+                var regex = new RegExp("\\b" + key + "\\b", "gi");
+                text = text.replace(regex, emojiMap[key]);
+            }
+            return text;
+        }
+
         var socket = io();
+
+        socket.emit('new user', username);
+
         $('form').submit(function() {
-          socket.emit('chat message', $('#input').val());
-          $('#input').val('');
-          return false;
+            var message = $('#input').val();
+            message = replaceWithEmoji(message);
+            socket.emit('chat message', message);
+            $('#input').val('');
+            return false;
         });
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
+
+        socket.on('chat message', function(msg) {
+            $('#messages').append($('<li>').text(msg));
         });
-      });
+
+        socket.on('update users', function(users) {
+            $('#users').empty();
+            users.forEach(function(user) {
+                $('#users').append($('<li>').text(user));
+            });
+        });
     </script>
 </body>
 </html>
